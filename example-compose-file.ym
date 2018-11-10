@@ -1,0 +1,45 @@
+version: '3'
+services:
+  db:
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    image: mysql:5.7
+    labels:
+      io.skopos.visual.position: 1110,200
+    volumes:
+    - source: db
+      target: /var/lib/mysql
+      type: volume
+  pma:
+    depends_on:
+    - db
+    environment:
+      PMA_HOST: db
+      PMA_PASSWORD: example
+      PMA_USER: root
+    image: phpmyadmin/phpmyadmin:latest
+    labels:
+      io.skopos.dt.db: _
+      io.skopos.lb.name: in-pma
+      io.skopos.lb.position: 70,440
+      io.skopos.visual.position: 600,450
+    ports:
+    - 8080:80
+  wp:
+    depends_on:
+    - db
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_PASSWORD: example
+    image: wordpress:latest
+    labels:
+      io.skopos.dt.db: _
+      io.skopos.lb.name: in
+      io.skopos.lb.position: 80,190
+      io.skopos.visual.position: 680,200
+    ports:
+    - 80:80
+volumes:
+  db: null
+
+
